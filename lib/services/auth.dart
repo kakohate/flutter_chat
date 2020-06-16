@@ -8,23 +8,29 @@ abstract class BaseAuth {
 }
 
 class AuthService implements BaseAuth {
-  final _googleSignIn = GoogleSignIn();
-  final _firebaseAuth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
+  @override
   Future<FirebaseUser> signInWithGoogle() async {
-    final googleSignInAccount = await _googleSignIn.signIn();
-    final googleSignInAuthentication = await googleSignInAccount.authentication;
-    final authCredential = GoogleAuthProvider.getCredential(
+    final GoogleSignInAccount googleSignInAccount =
+        await _googleSignIn.signIn();
+    final GoogleSignInAuthentication googleSignInAuthentication =
+        await googleSignInAccount.authentication;
+    final AuthCredential authCredential = GoogleAuthProvider.getCredential(
         idToken: googleSignInAuthentication.idToken,
         accessToken: googleSignInAuthentication.accessToken);
-    final firebaseUser = (await _firebaseAuth.signInWithCredential(authCredential)).user;
+    final FirebaseUser firebaseUser =
+        (await _firebaseAuth.signInWithCredential(authCredential)).user;
     return firebaseUser;
   }
 
+  @override
   Future<FirebaseUser> getCurrentUser() async {
     return await _firebaseAuth.currentUser();
   }
 
+  @override
   Future<void> signOut() async {
     return await _firebaseAuth.signOut();
   }

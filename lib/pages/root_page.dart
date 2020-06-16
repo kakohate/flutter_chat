@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterchat/pages/home_page.dart';
 import 'package:flutterchat/pages/sign_in_page.dart';
@@ -11,23 +12,23 @@ enum AuthStatus {
 }
 
 class RootPage extends StatefulWidget {
+  const RootPage(this.auth, this.firestore);
+
   final BaseAuth auth;
   final BaseFirestore firestore;
-
-  RootPage(this.auth, this.firestore);
 
   @override
   State createState() => _RootPageState();
 }
 
 class _RootPageState extends State<RootPage> {
-  var authStatus = AuthStatus.NOT_DETERMINED;
-  var _userId = "";
+  AuthStatus authStatus = AuthStatus.NOT_DETERMINED;
+  String _userId = '';
 
   @override
   void initState() {
     super.initState();
-    widget.auth.getCurrentUser().then((user) => setState(() {
+    widget.auth.getCurrentUser().then((FirebaseUser user) => setState(() {
           if (user != null) {
             _userId = user?.uid;
           }
@@ -38,9 +39,9 @@ class _RootPageState extends State<RootPage> {
   }
 
   void loginCallback() {
-    widget.auth.getCurrentUser().then((user) => setState(() {
-      _userId = user?.uid;
-    }));
+    widget.auth.getCurrentUser().then((FirebaseUser user) => setState(() {
+          _userId = user?.uid;
+        }));
     setState(() {
       authStatus = AuthStatus.LOGGED_IN;
     });
@@ -48,7 +49,7 @@ class _RootPageState extends State<RootPage> {
 
   void logoutCallback() {
     setState(() {
-      _userId = "";
+      _userId = '';
       authStatus = AuthStatus.NOT_LOGGED_IN;
     });
   }
@@ -66,7 +67,7 @@ class _RootPageState extends State<RootPage> {
         return Scaffold(
           body: Container(
             alignment: Alignment.center,
-            child: CircularProgressIndicator(),
+            child: const CircularProgressIndicator(),
           ),
         );
     }

@@ -1,16 +1,16 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterchat/services/auth.dart';
 import 'package:flutterchat/services/firestore.dart';
 import 'package:flutterchat/models/user.dart';
 
+@immutable
 class HomePage extends StatefulWidget {
+  const HomePage(this.auth, this.firestore, this.logoutCallback, this.userId);
+
   final BaseAuth auth;
   final BaseFirestore firestore;
   final VoidCallback logoutCallback;
   final String userId;
-
-  HomePage(this.auth, this.firestore, this.logoutCallback, this.userId);
 
   @override
   State createState() => _HomePageState();
@@ -18,8 +18,16 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   Widget _showUserProfile() {
-    return StreamBuilder<QuerySnapshot>(
-    );
+    User user;
+    widget.firestore
+        .getUserByUid(widget.userId)
+        .then((User value) => user = value);
+    if (user == null) {
+      widget.auth.signOut();
+      widget.logoutCallback();
+      return const Text('');
+    }
+    return Text(user.name);
   }
 
   Widget _showSignOutButton() {
@@ -28,19 +36,16 @@ class _HomePageState extends State<HomePage> {
         await widget.auth.signOut();
         widget.logoutCallback();
       },
-      child: Text('Sign out'),
+      child: const Text('Sign out'),
     );
   }
 
   Widget _build() {
-    return Container(
-      alignment: Alignment.center,
-      child: ListView(
-        children: <Widget>[
-          _showUserProfile(),
-          _showSignOutButton(),
-        ],
-      ),
+    return Column(
+      children: <Widget>[
+        _showUserProfile(),
+        _showSignOutButton(),
+      ],
     );
   }
 
@@ -48,7 +53,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('FlutterChat'),
+        title: const Text('FlutterChat'),
         backgroundColor: Colors.deepOrangeAccent,
       ),
       body: Container(

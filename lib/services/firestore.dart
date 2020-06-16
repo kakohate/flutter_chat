@@ -8,19 +8,20 @@ abstract class BaseFirestore {
 }
 
 class FirestoreService extends BaseFirestore {
+  @override
   Future<User> signUp(FirebaseUser firebaseUser) async {
-    final querySnapshot = await Firestore.instance
+    final QuerySnapshot querySnapshot = await Firestore.instance
         .collection('users')
         .where('id', isEqualTo: firebaseUser.uid)
         .getDocuments();
-    final documentSnapshot = querySnapshot.documents;
-    final now = DateTime.now();
+    final List<DocumentSnapshot> documentSnapshot = querySnapshot.documents;
+    final DateTime now = DateTime.now();
     User user;
     if (documentSnapshot.isEmpty) {
       Firestore.instance
           .collection('users')
           .document(firebaseUser.uid)
-          .setData({
+          .setData(<String, dynamic>{
         'id': firebaseUser.uid,
         'name': firebaseUser.displayName,
         'photoUrl': firebaseUser.photoUrl,
@@ -44,12 +45,13 @@ class FirestoreService extends BaseFirestore {
     return user;
   }
 
-  Future<User> getUserByUid(String uid) async{
-    final querySnapshot = await Firestore.instance
+  @override
+  Future<User> getUserByUid(String uid) async {
+    final QuerySnapshot querySnapshot = await Firestore.instance
         .collection('users')
         .where('id', isEqualTo: uid)
         .getDocuments();
-    final documentSnapshot = querySnapshot.documents;
+    final List<DocumentSnapshot> documentSnapshot = querySnapshot.documents;
     if (documentSnapshot.isNotEmpty) {
       return User(
         documentSnapshot[0]['id'].toString(),
