@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class User {
   const User(
     this.uid,
@@ -10,11 +12,11 @@ class User {
 
   User.fromJson(Map<String, dynamic> json)
       : uid = json['uid'] as String,
-        createdAt = json['created_at'] as DateTime,
+        createdAt = (json['created_at'] as Timestamp).toDate(),
         name = json['name'] as String,
-        photoUrl = json['photo_url'] as String,
-        email = json['email'] as String,
-        phoneNumber = json['phone_number'] as String;
+        photoUrl = json['photo_url'] as String ?? '',
+        email = json['email'] as String ?? '',
+        phoneNumber = json['phone_number'] as String ?? '';
 
   final String uid;
   final DateTime createdAt;

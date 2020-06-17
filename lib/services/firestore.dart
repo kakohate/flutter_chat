@@ -37,13 +37,11 @@ class FirestoreService extends BaseFirestore {
   Future<User> getUserByUid(String uid) async {
     final QuerySnapshot querySnapshot = await Firestore.instance
         .collection('users')
-        .where('id', isEqualTo: uid)
+        .where('uid', isEqualTo: uid)
         .getDocuments();
     final List<DocumentSnapshot> documentSnapshot = querySnapshot.documents;
     if (documentSnapshot.isNotEmpty) {
-      final Map<String, dynamic> data =
-          documentSnapshot[0] as Map<String, dynamic>;
-      return User.fromJson(data);
+      return User.fromJson(documentSnapshot[0].data);
     }
     return null;
   }

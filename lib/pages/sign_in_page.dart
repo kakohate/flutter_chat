@@ -34,7 +34,8 @@ class SignInPageState extends State<SignInPage> {
               final FirebaseUser firebaseUser = await auth.signInWithGoogle();
               firestore.signUp(firebaseUser);
               Navigator.pushReplacementNamed(context, HomePage.routeName,
-                  arguments: HomePageArguments(auth, firestore, firebaseUser.uid));
+                  arguments:
+                      HomePageArguments(auth, firestore, firebaseUser.uid));
             },
             child: const Text('Sign in with Google'),
           ),

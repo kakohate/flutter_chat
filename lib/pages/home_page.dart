@@ -38,6 +38,9 @@ class HomePageState extends State<HomePage> {
             FutureBuilder<User>(
               future: firestore.getUserByUid(userId),
               builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
+                if (snapshot.connectionState != ConnectionState.done) {
+                  return const CircularProgressIndicator();
+                }
                 if (snapshot.hasData) {
                   return Text(snapshot.data.name);
                 }
