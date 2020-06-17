@@ -1,21 +1,34 @@
 class User {
-  User(this.id, this.name, this.photoUrl, this.createdAt);
+  const User(
+    this.uid,
+    this.createdAt,
+    this.name, {
+    this.photoUrl,
+    this.email,
+    this.phoneNumber,
+  });
 
   User.fromJson(Map<String, dynamic> json)
-      : id = json['id'] as String,
+      : uid = json['uid'] as String,
+        createdAt = json['created_at'] as DateTime,
         name = json['name'] as String,
         photoUrl = json['photo_url'] as String,
-        createdAt = json['created_at'] as DateTime;
+        email = json['email'] as String,
+        phoneNumber = json['phone_number'] as String;
 
-  String id;
-  String name;
-  String photoUrl;
-  DateTime createdAt;
+  final String uid;
+  final DateTime createdAt;
+  final String name;
+  final String photoUrl;
+  final String email;
+  final String phoneNumber;
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-        'id': id,
+        'uid': uid,
+        'created_at': createdAt,
         'name': name,
         'photo_url': photoUrl,
-        'created_at': createdAt,
+        'email': email,
+        'phone_number': phoneNumber,
       };
 }

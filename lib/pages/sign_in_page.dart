@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat/services/auth.dart';
 import 'package:flutter_chat/services/firestore.dart';
 import 'package:flutter_chat/pages/home_page.dart';
-import 'package:flutter_chat/models/user.dart';
 
 class SignInPage extends StatefulWidget {
   static const String routeName = '/signIn';
@@ -33,9 +32,9 @@ class SignInPageState extends State<SignInPage> {
           child: RaisedButton(
             onPressed: () async {
               final FirebaseUser firebaseUser = await auth.signInWithGoogle();
-              final User user = await firestore.signUp(firebaseUser);
+              firestore.signUp(firebaseUser);
               Navigator.pushReplacementNamed(context, HomePage.routeName,
-                  arguments: HomePageArguments(auth, firestore, user.id));
+                  arguments: HomePageArguments(auth, firestore, firebaseUser.uid));
             },
             child: const Text('Sign in with Google'),
           ),
