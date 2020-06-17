@@ -19,20 +19,10 @@ class SignInPageArguments {
 }
 
 class SignInPageState extends State<SignInPage> {
-  Widget _showSignInWithGoogleButton(
-      BuildContext context, BaseAuth auth, BaseFirestore firestore) {
-    return RaisedButton(
-      onPressed: () async {
-        final FirebaseUser firebaseUser = await auth.signInWithGoogle();
-        final User user = await firestore.signUp(firebaseUser);
-        Navigator.pushReplacementNamed(context, HomePage.routeName,
-            arguments: HomePageArguments(auth, firestore, user.id));
-      },
-      child: const Text('Sign in with Google'),
-    );
-  }
-
   Widget _build(BuildContext context, SignInPageArguments args) {
+    final BaseAuth auth = args.auth;
+    final BaseFirestore firestore = args.firestore;
+
     return Scaffold(
         appBar: AppBar(
           title: const Text('新規登録/ログイン'),
@@ -40,8 +30,15 @@ class SignInPageState extends State<SignInPage> {
         ),
         body: Container(
           alignment: Alignment.center,
-          child:
-              _showSignInWithGoogleButton(context, args.auth, args.firestore),
+          child: RaisedButton(
+            onPressed: () async {
+              final FirebaseUser firebaseUser = await auth.signInWithGoogle();
+              final User user = await firestore.signUp(firebaseUser);
+              Navigator.pushReplacementNamed(context, HomePage.routeName,
+                  arguments: HomePageArguments(auth, firestore, user.id));
+            },
+            child: const Text('Sign in with Google'),
+          ),
         ));
   }
 

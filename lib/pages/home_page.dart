@@ -21,30 +21,11 @@ class HomePageArguments {
 }
 
 class HomePageState extends State<HomePage> {
-  Widget _showUserProfile(BaseFirestore firestore, String userId) {
-    return FutureBuilder<User>(
-      future: firestore.getUserByUid(userId),
-      builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
-        if (snapshot.hasData) {
-          return Text(snapshot.data.name);
-        }
-        return const Text('NOT_LOGGED_IN');
-      },
-    );
-  }
-
-  Widget _showSignOutButton(BaseAuth auth, BaseFirestore firestore) {
-    return RaisedButton(
-      onPressed: () async {
-        await auth.signOut();
-        Navigator.pushReplacementNamed(context, SignInPage.routeName,
-            arguments: SignInPageArguments(auth, firestore));
-      },
-      child: const Text('Sign out'),
-    );
-  }
-
   Widget _build(HomePageArguments args) {
+    final BaseAuth auth = args.auth;
+    final BaseFirestore firestore = args.firestore;
+    final String userId = args.userId;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('flutter_chat'),
@@ -54,8 +35,23 @@ class HomePageState extends State<HomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            _showUserProfile(args.firestore, args.userId),
-            _showSignOutButton(args.auth, args.firestore),
+            FutureBuilder<User>(
+              future: firestore.getUserByUid(userId),
+              builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
+                if (snapshot.hasData) {
+                  return Text(snapshot.data.name);
+                }
+                return const Text('NOT_LOGGED_IN');
+              },
+            ),
+            RaisedButton(
+              onPressed: () async {
+                await auth.signOut();
+                Navigator.pushReplacementNamed(context, SignInPage.routeName,
+                    arguments: SignInPageArguments(auth, firestore));
+              },
+              child: const Text('Sign out'),
+            ),
           ],
         ),
       ),
