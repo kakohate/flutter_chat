@@ -1,4 +1,4 @@
-# flutterchat
+# flutter_chat
 
 chat by flutter
 

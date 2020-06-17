@@ -1,4 +1,4 @@
-name: flutterchat
+name: flutter_chat
 description: chat by flutter
 
 # The following line prevents the package from being accidentally published to
@@ -27,6 +27,7 @@ dependencies:
   firebase_auth: ^0.16.1
   cloud_firestore: ^0.13.6
   google_sign_in: ^4.5.1
+  shared_preferences: ^0.5.7+3
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

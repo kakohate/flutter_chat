@@ -1,75 +1,36 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterchat/pages/home_page.dart';
-import 'package:flutterchat/pages/sign_in_page.dart';
-import 'package:flutterchat/services/auth.dart';
-import 'package:flutterchat/services/firestore.dart';
-
-enum AuthStatus {
-  NOT_DETERMINED,
-  NOT_LOGGED_IN,
-  LOGGED_IN,
-}
+import 'package:flutter_chat/services/auth.dart';
+import 'package:flutter_chat/services/firestore.dart';
+import 'package:flutter_chat/pages/sign_in_page.dart';
+import 'package:flutter_chat/pages/home_page.dart';
 
 class RootPage extends StatefulWidget {
   const RootPage(this.auth, this.firestore);
+
+  static const String routeName = '/';
 
   final BaseAuth auth;
   final BaseFirestore firestore;
 
   @override
-  State createState() => _RootPageState();
+  State createState() => RootPageState();
 }
 
-class _RootPageState extends State<RootPage> {
-  AuthStatus authStatus = AuthStatus.NOT_DETERMINED;
-  String _userId = '';
-
+class RootPageState extends State<RootPage> {
   @override
   void initState() {
     super.initState();
-    widget.auth.getCurrentUser().then((FirebaseUser user) => setState(() {
-          if (user != null) {
-            _userId = user?.uid;
-          }
-          authStatus = user?.uid == null
-              ? AuthStatus.NOT_LOGGED_IN
-              : AuthStatus.LOGGED_IN;
-        }));
-  }
-
-  void loginCallback() {
-    widget.auth.getCurrentUser().then((FirebaseUser user) => setState(() {
-          _userId = user?.uid;
-        }));
-    setState(() {
-      authStatus = AuthStatus.LOGGED_IN;
-    });
-  }
-
-  void logoutCallback() {
-    setState(() {
-      _userId = '';
-      authStatus = AuthStatus.NOT_LOGGED_IN;
-    });
+    widget.auth.getCurrentUser().then<void>((FirebaseUser user) => user == null
+        ? Navigator.pushReplacementNamed(context, SignInPage.routeName,
+            arguments: SignInPageArguments(widget.auth, widget.firestore))
+        : Navigator.pushReplacementNamed(context, HomePage.routeName,
+            arguments:
+                HomePageArguments(widget.auth, widget.firestore, user.uid)));
   }
 
   @override
   Widget build(BuildContext context) {
-    switch (authStatus) {
-      case AuthStatus.NOT_LOGGED_IN:
-        return SignInPage(widget.auth, widget.firestore, loginCallback);
-        break;
-      case AuthStatus.LOGGED_IN:
-        return HomePage(widget.auth, widget.firestore, logoutCallback, _userId);
-        break;
-      default:
-        return Scaffold(
-          body: Container(
-            alignment: Alignment.center,
-            child: const CircularProgressIndicator(),
-          ),
-        );
-    }
+    return const Scaffold();
   }
 }
