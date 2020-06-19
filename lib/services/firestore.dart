@@ -5,6 +5,7 @@ import 'package:flutter_chat/models/user.dart';
 abstract class BaseFirestore {
   Future<void> signUp(FirebaseUser firebaseUser);
   Future<User> getUserByUid(String uid);
+  Stream<QuerySnapshot> getUsersStream();
 }
 
 class FirestoreService extends BaseFirestore {
@@ -44,5 +45,10 @@ class FirestoreService extends BaseFirestore {
       return User.fromJson(documentSnapshot[0].data);
     }
     return null;
+  }
+
+  @override
+  Stream<QuerySnapshot> getUsersStream() {
+    return Firestore.instance.collection('users').snapshots();
   }
 }
