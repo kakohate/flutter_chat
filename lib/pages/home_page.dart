@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat/services/auth.dart';
 import 'package:flutter_chat/services/firestore.dart';
 import 'package:flutter_chat/models/user.dart';
+import 'package:flutter_chat/pages/chat_page.dart';
 
 @immutable
 class HomePage extends StatefulWidget {
@@ -43,9 +44,9 @@ class HomePageState extends State<HomePage> {
               final User user =
                   User.fromJson(snapshot.data.documents[index].data);
               return Container(
-                margin: const EdgeInsets.all(10.0),
+                margin: const EdgeInsets.all(8),
                 child: FlatButton(
-                  padding: const EdgeInsets.all(10.0),
+                  padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
                   child: Row(
                     children: <Widget>[
                       Material(
@@ -61,8 +62,8 @@ class HomePageState extends State<HomePage> {
                                 placeholder:
                                     (BuildContext context, String url) =>
                                         const CircularProgressIndicator(),
-                                height: 50.0,
-                                width: 50.0,
+                                height: 40.0,
+                                width: 40.0,
                               ),
                       ),
                       Container(
@@ -72,19 +73,12 @@ class HomePageState extends State<HomePage> {
                     ],
                   ),
                   onPressed: () {
-                    Navigator.of(context).push<Object>(
-                      MaterialPageRoute<Object>(
-                        builder: (BuildContext context) {
-                          return Scaffold(
-                            appBar: AppBar(),
-                            body: Container(
-                              alignment: Alignment.center,
-                              child: Text(user.name),
-                            ),
-                          );
-                        },
-                      ),
-                    );
+                    final roomId = args.userId.compareTo(user.uid) <= 0
+                        ? '${args.userId}-${user.uid}'
+                        : '${user.uid}-${args.userId}';
+                    Navigator.of(context).pushNamed(ChatPage.routeName,
+                        arguments: ChatPageArguments(
+                            args.firestore, args.userId, user.uid, roomId));
                   },
                 ),
               );

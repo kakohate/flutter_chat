@@ -1,11 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_chat/models/message.dart';
 import 'package:flutter_chat/models/user.dart';
 
 abstract class BaseFirestore {
   Future<void> signUp(FirebaseUser firebaseUser);
   Future<User> getUserByUid(String uid);
   Stream<QuerySnapshot> getUsersStream();
+  Stream<QuerySnapshot> getMessagesStream(String roomId);
+  void setMessage(String roomId, Message message);
 }
 
 class FirestoreService extends BaseFirestore {
@@ -50,5 +53,24 @@ class FirestoreService extends BaseFirestore {
   @override
   Stream<QuerySnapshot> getUsersStream() {
     return Firestore.instance.collection('users').snapshots();
+  }
+
+  @override
+  Stream<QuerySnapshot> getMessagesStream(String roomId) {
+    return Firestore.instance
+        .collection('rooms')
+        .document(roomId)
+        .collection('messages')
+        .orderBy('created_at', descending: true)
+        .snapshots();
+  }
+
+  @override
+  void setMessage(String roomId, Message message) {
+    Firestore.instance
+        .collection('rooms')
+        .document(roomId)
+        .collection('messages')
+        .add(message.toJson());
   }
 }
