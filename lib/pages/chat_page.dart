@@ -50,14 +50,16 @@ class ChatPageState extends State<ChatPage> {
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
-                    Container(
-                      child: Text(message.message),
-                      padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-                      decoration: BoxDecoration(
-                        color: const Color.fromRGBO(220, 220, 220, 1),
-                        borderRadius: BorderRadius.circular(8),
+                    Flexible(
+                      child: Container(
+                        child: Text(message.message),
+                        padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                        decoration: BoxDecoration(
+                          color: const Color.fromRGBO(220, 220, 220, 1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        margin: const EdgeInsets.fromLTRB(20, 0, 12, 12),
                       ),
-                      margin: const EdgeInsets.only(right: 12, bottom: 12),
                     ),
                   ],
                 );
@@ -66,14 +68,16 @@ class ChatPageState extends State<ChatPage> {
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    Container(
-                      child: Text(message.message),
-                      padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
+                    Flexible(
+                      child: Container(
+                        child: Text(message.message),
+                        padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        margin: const EdgeInsets.fromLTRB(12, 0, 20, 12),
                       ),
-                      margin: const EdgeInsets.only(left: 12, bottom: 12),
                     ),
                   ],
                 );
